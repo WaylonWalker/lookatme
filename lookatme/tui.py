@@ -28,7 +28,7 @@ def text(style, data, align="left"):
 def root_urwid_widget(to_wrap):
     """This function is overridable by contrib extensions that need to specify
     the root urwid widget.
-    
+
     The return value *must* return either the ``to_wrap`` widget itself, or
     another widget that wraps the provided ``to_wrap`` widget.
     """
@@ -48,16 +48,14 @@ class SlideRenderer(threading.Thread):
         self._log = lookatme.config.LOG.getChild("RENDER")
 
     def flush_cache(self):
-        """Clea everything out of the queue and the cache.
-        """
+        """Clea everything out of the queue and the cache."""
         # clear all pending items
         with self.queue.mutex:
             self.queue.queue.clear()
         self.cache.clear()
 
     def queue_render(self, slide):
-        """Queue up a slide to be rendered.
-        """
+        """Queue up a slide to be rendered."""
         self.events[slide.number].clear()
         self.queue.put(slide)
 
@@ -76,14 +74,12 @@ class SlideRenderer(threading.Thread):
         return res
 
     def get_slide(self, slide_number):
-        """Fetch the slide from the cache
-        """
+        """Fetch the slide from the cache"""
         self.locks[slide_number].wait()
         return self.cache[slide.number]
 
     def _propagate_meta(self, item1, item2):
-        """Copy the metadata from item1 to item2
-        """
+        """Copy the metadata from item1 to item2"""
         meta = getattr(item1, "meta", {})
         existing_meta = getattr(item2, "meta", {})
         new_meta = copy.deepcopy(meta)
@@ -92,10 +88,9 @@ class SlideRenderer(threading.Thread):
 
     def stop(self):
         self.keep_running.clear()
-    
+
     def run(self):
-        """Run the main render thread
-        """
+        """Run the main render thread"""
         self.keep_running.set()
         while self.keep_running.is_set():
             to_render = self.queue.get()
@@ -135,7 +130,7 @@ class SlideRenderer(threading.Thread):
             indentation.
           * ``loop`` - the ``urwid.MainLoop`` instance being used by lookatme.
             This won't usually be used, but is available if needed.
-        
+
         Main render functions (those defined in markdown_block.py) may have
         three types of return values:
 
@@ -161,7 +156,7 @@ class SlideRenderer(threading.Thread):
         self._log.debug(f"Rendered slide {slide_num} in {total}")
 
         return res
-    
+
     def _render_tokens(self, tokens):
         tmp_listbox = urwid.ListBox([])
         stack = [tmp_listbox]
@@ -171,7 +166,7 @@ class SlideRenderer(threading.Thread):
             last_stack = stack[-1]
             last_stack_len = len(stack)
 
-            #render_token = getattr(lam_md, f"render_{token['type']}", lambda *args: None)
+            # render_token = getattr(lam_md, f"render_{token['type']}", lambda *args: None)
             render_token = getattr(lam_md, f"render_{token['type']}")
             res = render_token(token, stack[-1], stack, self.loop)
             if len(stack) > last_stack_len:
@@ -185,10 +180,11 @@ class SlideRenderer(threading.Thread):
 
 class MarkdownTui(urwid.Frame):
     def __init__(self, pres, start_idx=0):
-        """
-        """
-        #self.slide_body = urwid.Pile(urwid.SimpleListWalker([urwid.Text("test")]))
-        self.slide_body = urwid.ListBox(urwid.SimpleFocusListWalker([urwid.Text("test")]))
+        """ """
+        # self.slide_body = urwid.Pile(urwid.SimpleListWalker([urwid.Text("test")]))
+        self.slide_body = urwid.ListBox(
+            urwid.SimpleFocusListWalker([urwid.Text("test")])
+        )
         self.slide_title = text("", "", "center")
         self.top_spacing = urwid.Filler(self.slide_title, top=0, bottom=0)
         self.top_spacing_box = urwid.BoxAdapter(self.top_spacing, 1)
@@ -201,7 +197,7 @@ class MarkdownTui(urwid.Frame):
 
         self._log = lookatme.config.LOG
 
-        urwid.set_encoding('utf8')
+        urwid.set_encoding("utf8")
         screen = urwid.raw_display.Screen()
         screen.set_terminal_properties(colors=256)
 
@@ -229,8 +225,7 @@ class MarkdownTui(urwid.Frame):
         )
 
     def prep_pres(self, pres, start_idx=0):
-        """Prepare the presentation for displaying/use
-        """
+        """Prepare the presentation for displaying/use"""
         self.curr_slide = self.pres.slides[start_idx]
         self.update()
 
@@ -240,46 +235,43 @@ class MarkdownTui(urwid.Frame):
             self.slide_renderer.queue_render(slide)
 
     def update_slide_num(self):
-        """Update the slide number
-        """
+        """Update the slide number"""
         slide_text = "slide {} / {}".format(
             self.curr_slide.number + 1,
             len(self.pres.slides),
         )
-        date = self.pres.meta.get('date', '')
+        date = self.pres.meta.get("date", "")
         spec = spec_from_style(config.STYLE["slides"])
         self.slide_num.set_text([(spec, slide_text)])
 
     def update_title(self):
-        """Update the title
-        """
+        """Update the title"""
         title = self.pres.meta.get("title", "")
         spec = spec_from_style(config.STYLE["title"])
         self.slide_title.set_text([(spec, f" {title} ")])
 
     def update_creation(self):
-        """Update the author and date
-        """
-        author = self.pres.meta.get('author', '')
+        """Update the author and date"""
+        author = self.pres.meta.get("author", "")
         author_spec = spec_from_style(config.STYLE["author"])
 
-        date = self.pres.meta.get('date', '')
+        date = self.pres.meta.get("date", "")
         date_spec = spec_from_style(config.STYLE["date"])
 
-        self.creation.set_text([
-            (author_spec, f"  {author} "),
-            (date_spec, f" {date} "),
-        ])
+        self.creation.set_text(
+            [
+                (author_spec, f"  {author} "),
+                (date_spec, f" {date} "),
+            ]
+        )
 
     def update_body(self):
-        """Render the provided slide body
-        """
+        """Render the provided slide body"""
         rendered = self.slide_renderer.render_slide(self.curr_slide)
         self.slide_body.body = rendered
 
     def update_slide_settings(self):
-        """Update the slide margins and paddings
-        """
+        """Update the slide margins and paddings"""
         margin = config.STYLE["margin"]
         padding = config.STYLE["padding"]
 
@@ -298,8 +290,7 @@ class MarkdownTui(urwid.Frame):
         self.bottom_spacing_box.height = margin["bottom"] + 1 + padding["bottom"]
 
     def update(self):
-        """
-        """
+        """ """
         self.update_slide_settings()
         self.update_slide_num()
         self.update_title()
@@ -307,8 +298,7 @@ class MarkdownTui(urwid.Frame):
         self.update_body()
 
     def reload(self):
-        """Reload the input, keeping the current slide in focus
-        """
+        """Reload the input, keeping the current slide in focus"""
         curr_slide_idx = self.curr_slide.number
         self.slide_renderer.flush_cache()
         self.pres.reload()
@@ -316,8 +306,7 @@ class MarkdownTui(urwid.Frame):
         self.update()
 
     def keypress(self, size, key):
-        """Handle keypress events
-        """
+        """Handle keypress events"""
         self._log.debug(f"KEY: {key}")
         try:
             key = urwid.Frame.keypress(self, size, key)
@@ -353,7 +342,6 @@ class MarkdownTui(urwid.Frame):
 
     def run(self):
         self.loop.run()
-
 
 
 def create_tui(pres, start_slide=0):

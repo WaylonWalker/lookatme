@@ -45,9 +45,7 @@ class FileSchema(Schema):
     lang = fields.Str(default="auto", missing="auto")
     transform = fields.Str(default=None, missing=None)
     lines = fields.Nested(
-        LineRange,
-        default=LineRange().dump(None),
-        missing=LineRange().dump(None)
+        LineRange, default=LineRange().dump(None), missing=LineRange().dump(None)
     )
 
     class Meta:
@@ -91,7 +89,7 @@ def render_code(token, body, stack, loop):
         token["text"] = "File not found"
         token["lang"] = "text"
         raise IgnoredByContrib
-    
+
     with open(full_path, "rb") as f:
         file_data = f.read()
 
@@ -99,7 +97,7 @@ def render_code(token, body, stack, loop):
         file_data = transform_data(file_info["transform"], file_data)
 
     lines = file_data.split(b"\n")
-    lines = lines[file_info["lines"]["start"]:file_info["lines"]["end"]]
+    lines = lines[file_info["lines"]["start"] : file_info["lines"]["end"]]
     file_data = b"\n".join(lines)
     token["text"] = file_data
     token["lang"] = file_info["lang"]

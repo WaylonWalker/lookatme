@@ -19,7 +19,7 @@ def setup_contrib(fake_mod):
     lookatme.contrib.CONTRIB_MODULES = [
         lookatme.contrib.terminal,
         lookatme.contrib.file_loader,
-        fake_mod
+        fake_mod,
     ]
     reload_module(lookatme.render.markdown_block)
     reload_module(lookatme.render.markdown_inline)
@@ -27,17 +27,17 @@ def setup_contrib(fake_mod):
 
 
 def test_overridable_root(mocker):
-    """Ensure that the root urwid component is overridable
-    """
+    """Ensure that the root urwid component is overridable"""
     lookatme.config.LOG = mocker.Mock()
 
-    class Wrapper(urwid.WidgetWrap): pass
+    class Wrapper(urwid.WidgetWrap):
+        pass
 
     class FakeMod:
         @staticmethod
         def root_urwid_widget(to_wrap):
             return Wrapper(to_wrap)
-    
+
     setup_contrib(FakeMod)
     input_stream = StringIO("test")
     pres = lookatme.pres.Presentation(input_stream, "dark")

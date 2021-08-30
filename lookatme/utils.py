@@ -6,8 +6,7 @@ import urwid
 
 
 def row_text(rendered_row):
-    """Return all text joined together from the rendered row
-    """
+    """Return all text joined together from the rendered row"""
     return b"".join(x[-1] for x in rendered_row)
 
 
@@ -33,8 +32,7 @@ def resolve_bag_of_text_markup_or_widgets(items):
 
 
 def dict_deep_update(to_update, new_vals):
-    """Deeply update the to_update dict with the new_vals
-    """
+    """Deeply update the to_update dict with the new_vals"""
     for key, value in new_vals.items():
         if isinstance(value, dict):
             node = to_update.setdefault(key, {})
@@ -124,7 +122,7 @@ def flatten_text(text, new_spec=None):
     res = []
     total_len = 0
     for spec, chunk_len in chunk_stylings:
-        split_text = text[total_len:total_len + chunk_len]
+        split_text = text[total_len : total_len + chunk_len]
         total_len += chunk_len
 
         split_text_spec = overwrite_spec(new_spec, spec)
@@ -137,8 +135,7 @@ def flatten_text(text, new_spec=None):
 
 
 def can_style_item(item):
-    """Return true/false if ``style_text`` can work with the given item
-    """
+    """Return true/false if ``style_text`` can work with the given item"""
     return isinstance(item, (urwid.Text, list, tuple))
 
 
@@ -154,9 +151,11 @@ def styled_text(text, new_styles, old_styles=None, supplement_style=False):
     if isinstance(text, urwid.Text):
         new_spec = spec_from_style(new_styles)
         return flatten_text(text, new_spec)
-    elif (isinstance(text, tuple)
-            and isinstance(text[0], urwid.AttrSpec)
-            and isinstance(text[1], urwid.Text)):
+    elif (
+        isinstance(text, tuple)
+        and isinstance(text[0], urwid.AttrSpec)
+        and isinstance(text[1], urwid.Text)
+    ):
         text = text[1].text
         old_styles = text[0]
 
@@ -174,8 +173,7 @@ def styled_text(text, new_styles, old_styles=None, supplement_style=False):
 
 
 def pile_or_listbox_add(container, widgets):
-    """Add the widget/widgets to the container
-    """
+    """Add the widget/widgets to the container"""
     if isinstance(container, urwid.ListBox):
         return listbox_add(container, widgets)
     elif isinstance(container, urwid.Pile):
@@ -189,22 +187,26 @@ def listbox_add(listbox, widgets):
         widgets = [widgets]
 
     for w in widgets:
-        if len(listbox.body) > 0 \
-                and isinstance(w, urwid.Divider) \
-                and isinstance(listbox.body[-1], urwid.Divider):
+        if (
+            len(listbox.body) > 0
+            and isinstance(w, urwid.Divider)
+            and isinstance(listbox.body[-1], urwid.Divider)
+        ):
             continue
         listbox.body.append(w)
 
+
 def pile_add(pile, widgets):
-    """
-    """
+    """ """
     if not isinstance(widgets, list):
         widgets = [widgets]
 
     for w in widgets:
-        if len(pile.contents) > 0 \
-                and isinstance(w, urwid.Divider) \
-                and isinstance(pile.contents[-1][0], urwid.Divider):
+        if (
+            len(pile.contents) > 0
+            and isinstance(w, urwid.Divider)
+            and isinstance(pile.contents[-1][0], urwid.Divider)
+        ):
             continue
         pile.contents.append((w, pile.options()))
 
@@ -217,16 +219,16 @@ def translate_color(raw_text):
 
     for at in raw_text.split("\x1b["):
         try:
-            attr, text = at.split("m",1)
+            attr, text = at.split("m", 1)
         except:
-            attr = '0'
-            text = at.split("m",1)
+            attr = "0"
+            text = at.split("m", 1)
 
-        list_attr = [ int(i) for i in attr.split(';') ]
+        list_attr = [int(i) for i in attr.split(";")]
         list_attr.sort()
         fg = -1
         bg = -1
-       
+
         for elem in list_attr:
             if elem <= 29:
                 pass
@@ -238,27 +240,28 @@ def translate_color(raw_text):
                 fg = fg + 8
             elif elem >= 100 and elem <= 104:
                 bg = bg + 8
-            
+
         fgcolor = color_list[fg]
         bgcolor = color_list[bg]
 
         if fg < 0:
-            fgcolor = ''
+            fgcolor = ""
         if bg < 0:
-            bgcolor = ''
+            bgcolor = ""
 
         if list_attr == [0]:
-            fgcolor = ''
-            bgcolor = ''
+            fgcolor = ""
+            bgcolor = ""
 
         formated_text.append((urwid.AttrSpec(fgcolor, bgcolor), text))
 
     return formated_text
 
+
 def int_to_roman(integer):
     integer = int(integer)
-    ints = [1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1]
-    nums = ["m",  "cm", "d", "cd","c", "xc","l","xl","x","ix","v","iv","i"]
+    ints = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    nums = ["m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i"]
     result = []
     for i in range(len(ints)):
         count = integer // ints[i]

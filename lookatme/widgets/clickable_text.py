@@ -12,8 +12,8 @@ from lookatme.utils import spec_from_style, row_text
 
 
 class LinkIndicatorSpec(urwid.AttrSpec):
-    """Used to track a link within an urwid.Text instance
-    """
+    """Used to track a link within an urwid.Text instance"""
+
     def __init__(self, link_label, link_target, orig_spec):
         """Create a new LinkIndicator spec from an existing urwid.AttrSpec
 
@@ -27,14 +27,12 @@ class LinkIndicatorSpec(urwid.AttrSpec):
 
 
 class ClickableText(urwid.Text):
-    """Allows clickable/changing text to be part of the Text() contents
-    """
+    """Allows clickable/changing text to be part of the Text() contents"""
 
     signals = ["click", "change"]
 
     def mouse_event(self, size, event, button, x, y, focus):
-        """Handle mouse events!
-        """
+        """Handle mouse events!"""
         if button != 1 or not is_mouse_press(event):
             return False
 
@@ -54,7 +52,7 @@ class ClickableText(urwid.Text):
         for idx, info in enumerate(chunk_stylings):
             style, length = info
             if curr_offset < total_offset <= curr_offset + length:
-                found_text = text[curr_offset:curr_offset + length]
+                found_text = text[curr_offset : curr_offset + length]
                 found_style = style
                 found_idx = idx
                 found_length = length
@@ -62,15 +60,15 @@ class ClickableText(urwid.Text):
             curr_offset += length
 
         if found_style is None or not isinstance(found_style, LinkIndicatorSpec):
-            self._emit('click')
+            self._emit("click")
             return True
-        
+
         # it's a link, so change the text and update the RLE!
         if found_text == found_style.link_label:
             new_text = found_style.link_target
         else:
             new_text = found_style.link_label
-        text = text[:curr_offset] + new_text + text[curr_offset+found_length:]
+        text = text[:curr_offset] + new_text + text[curr_offset + found_length :]
         new_rle = len(new_text)
 
         chunk_stylings[found_idx] = (found_style, new_rle)
@@ -80,5 +78,5 @@ class ClickableText(urwid.Text):
         self._invalidate()
 
         self._emit("change")
-        
+
         return True

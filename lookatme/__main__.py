@@ -62,7 +62,7 @@ from lookatme.schemas import StyleSchema
     "-s",
     "--safe",
     help="Do not load any new extensions specified in the source markdown. "
-         "Extensions specified via env var or -e are still loaded",
+    "Extensions specified via env var or -e are still loaded",
     is_flag=True,
     default=False,
 )
@@ -84,7 +84,7 @@ from lookatme.schemas import StyleSchema
     "--exts",
     "extensions",
     help="A comma-separated list of extension names to automatically load"
-         " (LOOKATME_EXTS)",
+    " (LOOKATME_EXTS)",
     envvar="LOOKATME_EXTS",
     default="",
 )
@@ -94,7 +94,7 @@ from lookatme.schemas import StyleSchema
     "single_slide",
     help="Render the source as a single slide",
     is_flag=True,
-    default=False
+    default=False,
 )
 @click.version_option(lookatme.__version__)
 @click.argument(
@@ -102,11 +102,22 @@ from lookatme.schemas import StyleSchema
     type=click.File("r"),
     nargs=-1,
 )
-def main(debug, log_path, theme, code_style, dump_styles,
-         input_files, live_reload, extensions, single_slide, safe, no_ext_warn,
-         ignore_ext_failure):
+def main(
+    debug,
+    log_path,
+    theme,
+    code_style,
+    dump_styles,
+    input_files,
+    live_reload,
+    extensions,
+    single_slide,
+    safe,
+    no_ext_warn,
+    ignore_ext_failure,
+):
     """lookatme - An interactive, terminal-based markdown presentation tool.
-    
+
     See https://lookatme.readthedocs.io/en/v{{VERSION}} for documentation
     """
     if debug:
@@ -117,8 +128,8 @@ def main(debug, log_path, theme, code_style, dump_styles,
     if len(input_files) == 0:
         input_files = [io.StringIO("")]
 
-    preload_exts = [x.strip() for x in extensions.split(',')]
-    preload_exts = list(filter(lambda x: x != '', preload_exts))
+    preload_exts = [x.strip() for x in extensions.split(",")]
+    preload_exts = list(filter(lambda x: x != "", preload_exts))
     pres = Presentation(
         input_files[0],
         theme,

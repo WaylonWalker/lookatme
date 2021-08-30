@@ -32,12 +32,14 @@ def _meta(item):
 
 
 def _set_is_list(item, level=1, ordered=False):
-    _meta(item).update({
-        "is_list": True,
-        "list_level": level,
-        "ordered": ordered,
-        "item_count": 0,
-    })
+    _meta(item).update(
+        {
+            "is_list": True,
+            "list_level": level,
+            "ordered": ordered,
+            "item_count": 0,
+        }
+    )
 
 
 def _inc_item_count(item):
@@ -71,8 +73,8 @@ def render_hrule(token, body, stack, loop):
     value descriptions.
     """
     hrule_conf = config.STYLE["hrule"]
-    div = urwid.Divider(hrule_conf['char'], top=1, bottom=1)
-    return urwid.Pile([urwid.AttrMap(div, spec_from_style(hrule_conf['style']))])
+    div = urwid.Divider(hrule_conf["char"], top=1, bottom=1)
+    return urwid.Pile([urwid.AttrMap(div, spec_from_style(hrule_conf["style"]))])
 
 
 @contrib_first
@@ -183,9 +185,9 @@ def render_list_start(token, body, stack, loop):
     list_level = 1
     if in_list:
         list_level = _list_level(stack[-1]) + 1
-    _set_is_list(res, list_level, ordered=token['ordered'])
-    _meta(res)['list_start_token'] = token
-    _meta(res)['max_list_marker_width'] = token.get('max_list_marker_width', 2)
+    _set_is_list(res, list_level, ordered=token["ordered"])
+    _meta(res)["list_start_token"] = token
+    _meta(res)["max_list_marker_width"] = token.get("max_list_marker_width", 2)
     stack.append(res)
 
     widgets = []
@@ -205,7 +207,7 @@ def render_list_end(token, body, stack, loop):
     value descriptions.
     """
     meta = _meta(stack[-1])
-    meta['list_start_token']['max_list_marker_width'] = meta['max_list_marker_width']
+    meta["list_start_token"]["max_list_marker_width"] = meta["max_list_marker_width"]
     stack.pop()
 
 
@@ -252,13 +254,15 @@ def _list_item_start(token, body, stack, loop):
     marker_text = list_marker + " "
     if len(marker_text) > meta["max_list_marker_width"]:
         meta["max_list_marker_width"] = len(marker_text)
-    marker_col_width = meta['max_list_marker_width']
+    marker_col_width = meta["max_list_marker_width"]
 
     res = urwid.Text(("bold", marker_text))
-    res = urwid.Columns([
-        (marker_col_width, urwid.Text(("bold", marker_text))),
-        pile,
-    ])
+    res = urwid.Columns(
+        [
+            (marker_col_width, urwid.Text(("bold", marker_text))),
+            pile,
+        ]
+    )
     stack.append(pile)
     return res
 
@@ -398,9 +402,14 @@ def render_block_quote_start(token, body, stack, loop):
                 urwid.Padding(pile, left=2),
                 spec_from_style(quote_style),
             ),
-            lline=quote_side, rline="",
-            tline=" ", trcorner="", tlcorner=quote_top_corner,
-            bline=" ", brcorner="", blcorner=quote_bottom_corner,
+            lline=quote_side,
+            rline="",
+            tline=" ",
+            trcorner="",
+            tlcorner=quote_top_corner,
+            bline=" ",
+            brcorner="",
+            blcorner=quote_bottom_corner,
         ),
         urwid.Divider(),
     ]
@@ -434,8 +443,4 @@ def render_code(token, body, stack, loop):
     text = token["text"]
     res = pygments_render.render_text(text, lang=lang)
 
-    return [
-        urwid.Divider(),
-        res,
-        urwid.Divider()
-    ]
+    return [urwid.Divider(), res, urwid.Divider()]

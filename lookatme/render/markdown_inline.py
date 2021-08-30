@@ -33,6 +33,7 @@ def expanded_styles(fn):
             return fn(text, styles)
         else:
             return fn(text, styles)
+
     return inner
 
 
@@ -47,8 +48,7 @@ def placeholder():
 
 
 def render_no_change(text):
-    """Render inline markdown text with no changes
-    """
+    """Render inline markdown text with no changes"""
     return [text]
 
 

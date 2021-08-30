@@ -24,8 +24,10 @@ def validate_extension_mod(ext_name, ext_mod):
     """
     res = []
     if not hasattr(ext_mod, "user_warnings"):
-        res.append("'user_warnings' is missing. Extension is not able to "
-                   "provide user warnings.")
+        res.append(
+            "'user_warnings' is missing. Extension is not able to "
+            "provide user warnings."
+        )
     else:
         res += ext_mod.user_warnings()
 
@@ -108,7 +110,6 @@ def contrib_first(fn):
 
 
 def shutdown_contribs():
-    """Call the shutdown function on all contrib modules
-    """
+    """Call the shutdown function on all contrib modules"""
     for mod in CONTRIB_MODULES:
         getattr(mod, "shutdown", lambda: 1)()

@@ -30,18 +30,19 @@ TEST_STYLE = {
 
 
 def test_headings(mocker):
-    """Test basic header rendering
-    """
+    """Test basic header rendering"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.markdown_block, "config")
     fake_config.STYLE = TEST_STYLE
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 # H1
 ## H2
 ### H3
 ---
-""")
+"""
+    )
 
     stripped_rows = [
         b"",
@@ -56,8 +57,7 @@ def test_headings(mocker):
 
 
 def test_table(mocker):
-    """Test basic table rendering
-    """
+    """Test basic table rendering"""
     import lookatme.widgets.table
 
     mocker.patch.object(lookatme.config, "LOG")
@@ -70,12 +70,14 @@ def test_table(mocker):
         },
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 | H1      |   H2   |     H3 |
 |:--------|:------:|-------:|
 | 1value1 | value2 | value3 |
 | 1       | 2      | 3      |
-""")
+"""
+    )
 
     stripped_rows = [
         b"H1        H2       H3",
@@ -87,8 +89,7 @@ def test_table(mocker):
 
 
 def test_lists(mocker):
-    """Test list rendering
-    """
+    """Test list rendering"""
     import lookatme.widgets.table
 
     mocker.patch.object(lookatme.config, "LOG")
@@ -103,7 +104,8 @@ def test_lists(mocker):
         },
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 * list 1
   * list 2
     * list 3
@@ -113,19 +115,20 @@ def test_lists(mocker):
     * list 3
 
 * list 2
-""")
+"""
+    )
 
     stripped_rows = [
-        b'',
-        b'  - list 1',
-        b'    = list 2',
-        b'      ^ list 3',
-        b'        * list 4',
-        b'    = list 2',
-        b'      ^ list 3',
-        b'      ^ list 3',
-        b'  - list 2',
-        b'',
+        b"",
+        b"  - list 1",
+        b"    = list 2",
+        b"      ^ list 3",
+        b"        * list 4",
+        b"    = list 2",
+        b"      ^ list 3",
+        b"      ^ list 3",
+        b"  - list 2",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
@@ -148,24 +151,26 @@ def test_lists_with_newline(mocker):
         },
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 * list 1
 
   * list 2
-""")
+"""
+    )
 
     stripped_rows = [
-        b'',
-        b'  - list 1',
-        b'',
-        b'    = list 2',
-        b'',
+        b"",
+        b"  - list 1",
+        b"",
+        b"    = list 2",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
+
 def test_numbered_lists(mocker):
-    """Test list rendering
-    """
+    """Test list rendering"""
     import lookatme.widgets.table
 
     mocker.patch.object(lookatme.config, "LOG")
@@ -186,7 +191,8 @@ def test_numbered_lists(mocker):
         },
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 1. list 1
     1. alpha1
     1. alpha2
@@ -200,31 +206,31 @@ def test_numbered_lists(mocker):
         * test1
         * test2
 1. list 3
-""")
+"""
+    )
 
     stripped_rows = [
-        b'',
-        b'  1. list 1',
-        b'     a. alpha1',
-        b'     b. alpha2',
-        b'     c. alpha3',
-        b'  2. list 2',
-        b'     a. alpha1.1',
-        b'        i.   roman1',
-        b'        ii.  roman2',
-        b'        iii. roman3',
-        b'     b. alpha1.2',
-        b'        ^ test1',
-        b'        ^ test2',
-        b'  3. list 3',
-        b'',
+        b"",
+        b"  1. list 1",
+        b"     a. alpha1",
+        b"     b. alpha2",
+        b"     c. alpha3",
+        b"  2. list 2",
+        b"     a. alpha1.1",
+        b"        i.   roman1",
+        b"        ii.  roman2",
+        b"        iii. roman3",
+        b"     b. alpha1.2",
+        b"        ^ test1",
+        b"        ^ test2",
+        b"  3. list 3",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
 
 def test_hrule(mocker):
-    """Test that hrules render correctly
-    """
+    """Test that hrules render correctly"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.markdown_block, "config")
     fake_config.STYLE = {
@@ -239,16 +245,15 @@ def test_hrule(mocker):
 
     rendered = render_markdown("---", width=10, single_slide=True)
     stripped_rows = [
-        b'',
-        b'==========',
-        b'',
+        b"",
+        b"==========",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
 
 def test_block_quote(mocker):
-    """Test block quote rendering
-    """
+    """Test block quote rendering"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.markdown_block, "config")
     fake_config.STYLE = {
@@ -263,68 +268,73 @@ def test_block_quote(mocker):
         },
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 > this is a quote
-""")
+"""
+    )
 
     stripped_rows = [
-        b'',
-        b'-',
-        b'>  this is a quote',
-        b'=',
-        b'',
+        b"",
+        b"-",
+        b">  this is a quote",
+        b"=",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
+
 def test_code(mocker):
-    """Test code block rendering
-    """
+    """Test code block rendering"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.pygments, "config")
     fake_config.STYLE = {
         "style": "monokai",
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 ```python
 def some_fn(*args, **kargs):
     pass```
-""")
+"""
+    )
 
     stripped_rows = [
-        b'',
-        b'def some_fn(*args, **kargs):',
-        b'    pass',
-        b'',
+        b"",
+        b"def some_fn(*args, **kargs):",
+        b"    pass",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
 
 def test_empty_codeblock(mocker):
-    """Test that empty code blocks render correctly
-    """
+    """Test that empty code blocks render correctly"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.pygments, "config")
     fake_config.STYLE = {
         "style": "monokai",
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 ```python
 
-```""")
+```"""
+    )
 
 
 def test_code_yaml(mocker):
-    """Test code block rendering with yaml language
-    """
+    """Test code block rendering with yaml language"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.pygments, "config")
     fake_config.STYLE = {
         "style": "monokai",
     }
 
-    rendered = render_markdown("""
+    rendered = render_markdown(
+        """
 ```yaml
 test: a value
 test2: "another value"
@@ -332,24 +342,24 @@ array:
   - item1
   - item2
   - item3
-```""")
+```"""
+    )
 
     stripped_rows = [
-        b'',
-        b'test: a value',
+        b"",
+        b"test: a value",
         b'test2: "another value"',
-        b'array:',
-        b'  - item1',
-        b'  - item2',
-        b'  - item3',
-        b'',
+        b"array:",
+        b"  - item1",
+        b"  - item2",
+        b"  - item3",
+        b"",
     ]
     assert_render(stripped_rows, rendered)
 
 
 def test_inline(mocker):
-    """Test inline markdown
-    """
+    """Test inline markdown"""
     mocker.patch.object(lookatme.config, "LOG")
     fake_config = mocker.patch.object(lookatme.render.pygments, "config")
     mocker.patch.object(lookatme.render.markdown_inline, "config", fake_config)
@@ -396,6 +406,7 @@ def test_inline(mocker):
     assert rendered[1][0][0].foreground == "default,underline"
     assert row_text(rendered[1]).rstrip() == b"link"
 
+
 #      rendered = render_markdown("""
 #  test[^1]
 #  [^1]: This is a foot note
@@ -403,4 +414,4 @@ def test_inline(mocker):
 #      assert len(rendered) == 1
 #      assert rendered[0][0][0].foreground == "default,underline"
 #      assert row_text(rendered[0]).rstrip() == b"link"
-#  
+#

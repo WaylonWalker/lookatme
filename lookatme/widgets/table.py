@@ -14,8 +14,7 @@ from lookatme.widgets.clickable_text import ClickableText
 
 
 class Table(urwid.Pile):
-    """Create a table from a list of headers, alignment values, and rows.
-    """
+    """Create a table from a list of headers, alignment values, and rows."""
 
     signals = ["change"]
 
@@ -65,10 +64,12 @@ class Table(urwid.Pile):
             header_columns = []
             for idx, header in enumerate(self.rend_headers[0]):
                 header = header[0]
-                header_with_div = urwid.Pile([
-                    self.watch(header),
-                    urwid.Divider(config.STYLE["table"]["header_divider"]),
-                ])
+                header_with_div = urwid.Pile(
+                    [
+                        self.watch(header),
+                        urwid.Divider(config.STYLE["table"]["header_divider"]),
+                    ]
+                )
                 header_columns.append((self.column_maxes[idx], header_with_div))
             final_rows.append(urwid.Columns(header_columns, cell_spacing))
 
@@ -81,18 +82,16 @@ class Table(urwid.Pile):
 
             column_row = urwid.Columns(row_columns, cell_spacing)
             final_rows.append(column_row)
-        
+
         urwid.Pile.__init__(self, final_rows)
 
     def render(self, *args, **kwargs):
-        """Do whatever needs to be done to render the table
-        """
+        """Do whatever needs to be done to render the table"""
         self.set_column_maxes()
         return urwid.Pile.render(self, *args, **kwargs)
-    
+
     def watch(self, w):
-        """Watch the provided widget w for changes
-        """
+        """Watch the provided widget w for changes"""
         if "change" not in getattr(w, "signals", []):
             return w
 
@@ -102,14 +101,13 @@ class Table(urwid.Pile):
 
         urwid.connect_signal(w, "change", wrapper)
         return w
-    
+
     def _invalidate(self):
         self.set_column_maxes()
         urwid.Pile._invalidate(self)
 
     def set_column_maxes(self):
-        """Calculate and set the column maxes for this table
-        """
+        """Calculate and set the column maxes for this table"""
         self.column_maxes = self.calc_column_maxes()
         cell_spacing = config.STYLE["table"]["column_spacing"]
         self.total_width = sum(self.column_maxes.values()) + (
@@ -121,10 +119,12 @@ class Table(urwid.Pile):
             new_columns = []
             for idx, column_items in enumerate(columns.contents):
                 column_widget, column_info = column_items
-                new_columns.append((
-                    column_widget,
-                    (column_info[0], self.column_maxes[idx], column_info[2]),
-                ))
+                new_columns.append(
+                    (
+                        column_widget,
+                        (column_info[0], self.column_maxes[idx], column_info[2]),
+                    )
+                )
             columns.contents = new_columns
 
     def calc_column_maxes(self):

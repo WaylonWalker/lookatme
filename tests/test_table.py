@@ -10,8 +10,7 @@ from tests.utils import *
 
 
 def test_basic_render(mocker):
-    """Test that a Table widget renders correctly
-    """
+    """Test that a Table widget renders correctly"""
     column_spacing = 3
 
     fake_config = mocker.patch.object(lookatme.widgets.table, "config")
@@ -98,7 +97,7 @@ def test_basic_render(mocker):
 def test_table_no_headers(mocker):
     """This situation could never happen as parsed from Markdown. See
     https://stackoverflow.com/a/17543474.
-    
+
     However this situation could happen manually when using the Table() class
     directly.
     """
@@ -126,8 +125,7 @@ def test_table_no_headers(mocker):
 
 
 def test_ignored_extra_column(mocker):
-    """Test that extra columns beyond header values are ignored
-    """
+    """Test that extra columns beyond header values are ignored"""
     fake_config = mocker.patch.object(lookatme.widgets.table, "config")
     fake_config.STYLE = {
         "style": "monokai",
