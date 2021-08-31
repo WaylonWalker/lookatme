@@ -269,6 +269,8 @@ class MetaSchema(Schema):
     )
     author = fields.Str(default="", missing="")
     templateKey = fields.Str(default="", missing="")
+    status = fields.Str(default="", missing="")
+    tags = fields.List(fields.Str(), default=[], missing=[])
     styles = fields.Nested(
         StyleSchema,
         default=StyleSchema().dump(None),
